@@ -1,10 +1,10 @@
 # RemoteShellLauncher
 
-Homework	Graded
+## Homework	Graded
 
-This	homework	is	due	Monday	February	27,	 2017.
+### This	homework	is	due	Monday	February	27,	 2017.
 
-Part 1	- Remote	Shell – 25 Pts
+#### Part 1	- Remote	Shell – 25 Pts
 
 So	far	we	have	exploited	applications	with	shellcode	that	spawns	a	shell	locally	or	prints	
 hello	world. For	this	assignment	you	will	be	required	to	create	a	shellcode	that	can	be	used	
@@ -43,7 +43,7 @@ groups=1000(secstudent),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),
 109(lpadmin),124(sambashare)
 ```
 
-Part	2	– Exploitation
+#### Part	2	– Exploitation
 Now	that	you	know	the	shellcode	works,	you	will	use	it	in	exploiting	the	file_echo
 application	located	in	bof_hw_files directory.	The	application	accepts	a	filename	and	
 username	as	command	line	arguments	then	echos/prints	out	the	contents	of	the	file	
